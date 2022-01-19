@@ -2,10 +2,10 @@ import express from 'express';
 import * as controller from '../controllers/inventory';
 
 const router = express.Router();
-router.post('/add-item', controller.addItem);
-router.post('/remove-item', controller.removeItem);
-router.post('/edit-item', controller.editItem);
-router.post('/get-items', controller.getAll);
+router.post('/item', controller.addItem);
+router.delete('/item', controller.removeItem);
+router.put('/item', controller.editItem);
+router.get('/item', controller.getAll);
 
 
 export default router;

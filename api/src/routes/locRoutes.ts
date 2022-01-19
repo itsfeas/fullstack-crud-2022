@@ -2,9 +2,9 @@ import express from 'express';
 import * as controller from '../controllers/locations';
 
 const router = express.Router();
-router.post('/add-loc', controller.addLoc);
-router.post('/remove-loc', controller.removeLoc);
-router.post('/get-locs', controller.getAll);
+router.post('/location', controller.addLoc);
+router.delete('/location', controller.removeLoc);
+router.get('/location', controller.getAll);
 
 
 export default router;
