@@ -29,7 +29,7 @@ export function DeleteItem(props) {
         if(status === 0){
             setShowAlert(true);
             setAlertType("success")
-            setAlertText("Item Added")
+            setAlertText("Item Deleted")
             props.refresh()
         }
         else{
