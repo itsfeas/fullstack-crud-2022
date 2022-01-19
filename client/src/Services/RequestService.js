@@ -23,7 +23,7 @@ async function getResponse(res){
 //Exported functions
 export const RequestService = {
   addItem: async (to, from, description, location, weight)=>{
-      let status
+
     await fetch("http://localhost:8000/api/v1/item",
         {
           method:"POST",
@@ -40,7 +40,6 @@ export const RequestService = {
       return 0
   },
   deleteItem: async (id) => {
-    let status
     await fetch("http://localhost:8000/api/v1/item",
       {
         method: "DELETE",
@@ -52,7 +51,6 @@ export const RequestService = {
     return 0
   },
   editItem: async (id, to, from, description, location, weight) => {
-    let status
     await fetch("http://localhost:8000/api/v1/item",
       {
         method: "PUT",
@@ -79,25 +77,22 @@ export const RequestService = {
     });
     return body;
   },
-  addLocation: async (location) => {
-    let status
+  addLoc: async (location) => {
+    console.log(location)
     await fetch("http://localhost:8000/api/v1/location",
       {
         method: "POST",
-        headers: { "Content-type": "application/json" },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ location: location })
       })
     return 0
   },
-  deleteLocation: async (location) => {
-    let status
+  deleteLoc: async (location) => {
     await fetch("http://localhost:8000/api/v1/location",
       {
         method: "DELETE",
         headers: { "Content-type": "application/json" },
-        body: JSON.stringify({
-          location: location
-        })
+        body: JSON.stringify({ location: location })
       })
     return 0
   },

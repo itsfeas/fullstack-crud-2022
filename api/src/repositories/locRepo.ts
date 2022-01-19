@@ -10,10 +10,10 @@ import connection from './util/connection';
  *  @returns nothing
 */
 const add = (location: string) => {
-    const locWhere: schema.locations.Insertable = {
+    const loc: schema.locations.Insertable = {
         location: location
     };
-    db.insert('locations', locWhere).run(connection);
+    db.insert('locations', loc).run(connection);
 };
 
 

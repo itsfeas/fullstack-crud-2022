@@ -7,14 +7,13 @@ import React, { Component } from 'react';
 
 
 function App () {
-  const [page, setPage] = useState("Inventory");
     return (
       <ThemeProvider theme={mainTheme}>
         <CssBaseline />
         <Container >
           <Container maxWidth="sm" >
             <Stack >
-              {page === "Inventory" && <Dashboard theme={mainTheme}/>}
+              <Dashboard theme={mainTheme}/>
             </Stack>
           </Container>
         </Container>

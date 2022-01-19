@@ -4,6 +4,8 @@ import { RequestService } from "./Services/RequestService"
 import { AddItem } from './AddItem'
 import { DeleteItem } from './DeleteItem'
 import { EditItem } from './EditItem'
+import { DeleteLoc } from './DeleteLoc'
+import { AddLoc } from './AddLoc'
 
 
 function Dashboard(props) {
@@ -11,11 +13,14 @@ function Dashboard(props) {
   const [showAddItem, setShowAddItem] = useState(false)
   const [showDeleteItem, setShowDeleteItem] = useState(false)
   const [showEditItem, setShowEditItem] = useState(false)
-  const [items, setItems] = useState({ allItems: [], table: "", isLoading: true })
-  const [locations, setLocations] = useState({ allLocations: [], table: "", isLoading: true })
+  const [showDeleteLoc, setShowDeleteLoc] = useState(false)
+  const [showAddLoc, setShowAddLoc] = useState(false)
+  const [loading, setLoading] = useState(false)
+  const [items, setItems] = useState({ allItems: [], table: "" })
+  const [locations, setLocations] = useState({ allLocations: [], table: ""})
 
   function getTable(inp) {
-    if (locitem) {
+    if (!locitem) {
       return (getItemTable(inp))
     }
     else {
@@ -83,68 +88,56 @@ function Dashboard(props) {
     </TableContainer>)
   }
 
-  async function firstCall() {
-    // First API call
-    setLocitem(true)
-    if (!locitem) {
-      await RequestService.getItems()
-        .then((res) => {
-          console.log(res)
-          setItems({
-            allItems: res,
-            table: getItemTable(res),
-            isLoading: false
-          })
+  useEffect(() => {
+    RequestService.getItems()
+      .then((res) => {
+        setItems({
+          allItems: res,
+          table: getItemTable(res),
         })
-    }
-    else {
-      await RequestService.getLocations()
-        .then((res) => {
-          console.log(res)
-          setItems({
-            allItems: res,
-            table: getLocTable(res),
-            isLoading: false
-          })
+      })
+    RequestService.getLocations()
+      .then((res) => {
+        setLocations({
+          allLocations: res,
+          table: getLocTable(res),
         })
-    }
-  }
-
-  useLayoutEffect(() => {
-    firstCall()
+      })
+    setTimeout(() => {
+      refresh()
+    }, 1000);
   }, [])
 
-  async function refresh() {
-    if (!locitem) {
-      setItems((prevState) => {
-        return { ...prevState, isLoading: true }
-      })
-      setTimeout(() => {
-        RequestService.getItems()
-          .then((res) => {
-            setItems({
-              allItems: res,
-              table: getItemTable(res),
-              isLoading: false
-            })
+  async function slow_refresh() {
+    setLoading((prevState) => {
+      return { ...prevState, loading: true }
+    })
+    setTimeout(() => {
+      refresh()
+    }, 1000);
+  }
 
+  async function refresh() {
+    console.log("item", !locitem)
+    if (!locitem) {
+      RequestService.getItems()
+        .then((res) => {
+          setItems({
+            allItems: res,
+            table: getTable(res),
           })
-      }, 1000)
+          setLoading(false)
+        })
     }
     else {
-      setLocations((prevState) => {
-        return { ...prevState, isLoading: true }
-      })
-      setTimeout(() => {
-        RequestService.getLocations()
-          .then((res) => {
-            setItems({
-              allItems: res,
-              table: getLocTable(res),
-              isLoading: false
-            })
+      RequestService.getLocations()
+        .then((res) => {
+          setLocations({
+            allLocations: res,
+            table: getTable(res),
           })
-      }, 1000)
+          setLoading(false)
+        })
     }
   }
 
@@ -166,38 +159,36 @@ function Dashboard(props) {
     //Shows or hides Edit Item interface
     locitem ? setLocitem(false) : setLocitem(true)
   }
-  function toggleItemLocation() {
+  function toggleDeleteLoc() {
     //Shows or hides Edit Item interface
-    showDeleteLoc ? setLocitem(false) : setLocitem(true)
+    showDeleteLoc ? setShowDeleteLoc(false) : setShowDeleteLoc(true)
+  }
+  function toggleAddLoc() {
+    //Shows or hides Edit Item interface
+    showAddLoc ? setShowAddLoc(false) : setShowAddLoc(true)
   }
 
   return (
     <Stack>
-      {/* //   <Stack direction='row' justifyContent="space-evenly">
-    //     <Button onClick={props.logout} >Logout</Button>
-    //     <Button onClick={(e) => { selectUser(props.exec.ccid) }} >My Profile</Button>
-    //   </Stack> */}
-
       <Stack direction="row" justifyContent="space-between" width="100%">
-        {/* <FormControl>
-          <InputLabel htmlFor="location">search by location</InputLabel>
-          <Input autoComplete="off" id="location" value={location} onChange={(e) => { searchItems(e.target.value) }} />
-        </FormControl> */}
         {!locitem && <Button onClick={(e) => { toggleAddItem(); refresh() }}> Add Item</Button>}
         {!locitem && <Button onClick={(e) => { toggleEditItem(); refresh() }}> Edit Item</Button>}
         {!locitem && <Button onClick={(e) => { toggleDeleteItem(); refresh() }}> Delete Item</Button>}
-        {!locitem && <Button onClick={(e) => { toggleItemLocation(); refresh() }}> Items</Button>}
-        {locitem && <Button onClick={(e) => { toggleDeleteItem(); refresh() }}> Add Location</Button>}
+        {locitem && <Button onClick={(e) => { toggleAddLoc(); refresh() }}> Add Location</Button>}
         {locitem && <Button onClick={(e) => { toggleDeleteLoc(); refresh() }}> Delete Location</Button>}
-        {locitem && <Button onClick={(e) => { toggleItemLocation(); refresh()}}> Location</Button>}
+        {locitem && <Button onClick={(e) => { toggleItemLocation(); slow_refresh() }}> Switch to Items</Button>}
+        {!locitem && <Button onClick={(e) => { toggleItemLocation(); slow_refresh() }}> Switch to Locations</Button>}
       </Stack>
       {showDeleteItem && <DeleteItem setShowDeleteItem={setShowDeleteItem} refresh={refresh} />}
       {showAddItem && <AddItem setShowAddItem={setShowAddItem} refresh={refresh} />}
       {showEditItem && <EditItem setShowEditItem={setShowEditItem} refresh={refresh} />}
-      {items.isLoading && <Stack sx={{ width: '100%', color: 'grey.500' }} spacing={2}>
+      {showDeleteLoc && <DeleteLoc setShowDeleteLoc={setShowDeleteLoc} refresh={refresh} />}
+      {showAddLoc && <AddLoc setShowAddLoc={setShowAddLoc} refresh={refresh} />}
+      {loading && <Stack sx={{ width: '100%', color: 'grey.500' }} spacing={2}>
         <LinearProgress color="inherit" />
       </Stack>}
-      {!items.isLoading && items.table}
+      {!loading && locitem && locations.table}
+      {!loading && !locitem && items.table}
     </Stack>
 
   );

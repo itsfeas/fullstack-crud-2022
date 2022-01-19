@@ -5,7 +5,7 @@ import "./style.css"
 import ButtonUnstyled, { buttonUnstyledClasses } from '@mui/core/ButtonUnstyled';
 import { styled } from '@mui/system';
 
-export function DeleteLoc(props) {
+export function AddLoc(props) {
     const[location,setLocation] = useState("")
     const [isLoading, setIsLoading] = useState(false)
     const [alertType, setAlertType] = useState("error");
@@ -24,11 +24,11 @@ export function DeleteLoc(props) {
             return
         }
         
-        const status = await RequestService.deleteLoc(location)
+        const status = await RequestService.addLoc(location)
         if(status === 0){
             setShowAlert(true);
             setAlertType("success")
-            setAlertText("Location Deleted")
+            setAlertText("Location Added")
             props.refresh()
         }
         else{
@@ -84,7 +84,7 @@ export function DeleteLoc(props) {
     return (
         <form onSubmit = {submitHandler}>
         <Stack>
-            <Typography variant = "p" class = "normalText">Delete Location</Typography>
+            <Typography variant = "p" class = "normalText">Add Location</Typography>
              {showAlert && <Alert severity = {alertType}> {alertText}!</Alert>} 
             <FormControl>
               <InputLabel htmlFor = "location" class = "normalText">location</InputLabel>
@@ -95,8 +95,8 @@ export function DeleteLoc(props) {
             </Stack>}
 
             <Stack direction = 'row' justifyContent="space-evenly">
-                <Button disabled={isLoading} class = "redText" type = "submit">Delete</Button>
-                <CustomButton disabled = {isLoading} onClick = {(e)=>{props.setShowDeleteLoc(false)}}>Close</CustomButton>
+                <Button disabled={isLoading} class = "redText" type = "submit">Add</Button>
+                <CustomButton disabled = {isLoading} onClick = {(e)=>{props.setShowAddLoc(false)}}>Close</CustomButton>
             </Stack>
             
         </Stack>
