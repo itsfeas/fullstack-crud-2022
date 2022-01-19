@@ -13,7 +13,7 @@ const addItem = controller((req: Request, res: Response) => {
     invRepo.add(
         params.to,
         params.from,
-        params.params.description,
+        params.description,
         params.location,
         params.weight
     );
@@ -46,7 +46,7 @@ const editItem = controller((req: Request, res: Response) => {
         params.id,
         params.to,
         params.from,
-        params.params.description,
+        params.description,
         params.location,
         params.weight
     );
