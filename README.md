@@ -1,1 +1,1 @@
-# shopify-backend-2022
+# fullstack-crud-2022
